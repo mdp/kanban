@@ -208,11 +208,13 @@ export function ProjectNavigationPanel({
 
 const isMac = typeof navigator !== "undefined" && /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent);
 const MOD = isMac ? "\u2318" : "Ctrl";
+const ALT = isMac ? '\u2325' : 'Alt'
 
 const ESSENTIAL_SHORTCUTS = [
 	{ keys: ["C"], label: "New task" },
 	{ keys: [MOD, "\u23CE"], label: "Create task" },
 	{ keys: [MOD, "Shift", "\u23CE"], label: "Create & start" },
+	{ keys: [ALT, "Shift", "s"], label: "Start all tasks" },
 	{ keys: [MOD, "J"], label: "Toggle terminal" },
 	{ keys: [MOD], label: "Hold to link tasks" },
 ];

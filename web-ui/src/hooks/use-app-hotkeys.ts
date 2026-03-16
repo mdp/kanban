@@ -11,6 +11,7 @@ interface UseAppHotkeysInput {
 	handleToggleExpandDetailTerminal: () => void;
 	handleToggleExpandHomeTerminal: () => void;
 	handleOpenCreateTask: () => void;
+	onStartAllTasks: () => void
 }
 
 export function useAppHotkeys({
@@ -22,6 +23,7 @@ export function useAppHotkeys({
 	handleToggleExpandDetailTerminal,
 	handleToggleExpandHomeTerminal,
 	handleOpenCreateTask,
+	onStartAllTasks,
 }: UseAppHotkeysInput): void {
 	useHotkeys(
 		"mod+j",
@@ -39,6 +41,11 @@ export function useAppHotkeys({
 		},
 		[handleToggleDetailTerminal, handleToggleHomeTerminal, selectedCard],
 	);
+
+	useHotkeys('alt+shift+s', onStartAllTasks, {
+		enableOnContentEditable: false,
+		enableOnFormTags: false,
+	})
 
 	useHotkeys(
 		"mod+m",

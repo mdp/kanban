@@ -449,17 +449,6 @@ export default function App(): ReactElement {
 		setIsSettingsOpen(true);
 	}, []);
 
-	useAppHotkeys({
-		selectedCard,
-		isDetailTerminalOpen,
-		isHomeTerminalOpen,
-		handleToggleDetailTerminal,
-		handleToggleHomeTerminal,
-		handleToggleExpandDetailTerminal,
-		handleToggleExpandHomeTerminal,
-		handleOpenCreateTask,
-	});
-
 	const {
 		handleProgrammaticCardMoveReady,
 		confirmMoveTaskToTrash,
@@ -527,6 +516,18 @@ export default function App(): ReactElement {
 		prepareTerminalForShortcut,
 		prepareWaitForTerminalConnectionReady,
 		sendTaskSessionInput,
+	});
+
+	useAppHotkeys({
+		selectedCard,
+		isDetailTerminalOpen,
+		isHomeTerminalOpen,
+		handleToggleDetailTerminal,
+		handleToggleHomeTerminal,
+		handleToggleExpandDetailTerminal,
+		handleToggleExpandHomeTerminal,
+		handleOpenCreateTask,
+		onStartAllTasks: handleStartAllBacklogTasksWithServiceSetupPrompt
 	});
 
 	useEffect(() => {
