@@ -72,4 +72,72 @@ Click the branch name in the navbar to open a full git interface to browse commi
 
 ---
 
+## Development
+
+Run Kanban from source against any project — no global install required. This works correctly on feature branches because Kanban's hook system is self-referential: when it launches an agent, it writes the exact `tsx src/cli.ts` invocation path into the agent's hook config, so all callbacks from agents automatically route back to your local checkout.
+
+### One-time setup
+
+```bash
+# Install root and web-ui dependencies
+npm run install:all
+
+# Build the web UI (needed once; the runtime serves these static files)
+npm run web:build
+```
+
+### Run against a project
+
+```bash
+cd /path/to/your/project
+/path/to/kanban/node_modules/.bin/tsx /path/to/kanban/src/cli.ts
+```
+
+Or set a shell alias/function for convenience:
+
+```bash
+# Add to ~/.zshrc or ~/.bashrc
+kanban-dev() {
+  /path/to/kanban/node_modules/.bin/tsx /path/to/kanban/src/cli.ts "$@"
+}
+```
+
+Then just run `kanban-dev` from any git repo.
+
+### Live-reload the web UI
+
+If you're also changing frontend code, run the Vite dev server in a second terminal. The runtime will proxy API calls through automatically:
+
+```bash
+# Terminal 1 — runtime (from your project directory)
+/path/to/kanban/node_modules/.bin/tsx /path/to/kanban/src/cli.ts
+
+# Terminal 2 — web UI with HMR (from the kanban repo)
+npm run web:dev
+```
+
+### Alternative: npm link
+
+If you prefer a `kanban` command in your PATH that still runs from source:
+
+```bash
+# In the kanban repo
+npm run link    # builds + npm link
+
+# Unlink when done
+npm run unlink
+```
+
+Note that `npm link` requires a rebuild (`npm run build`) after source changes, unlike the `tsx` approach above which runs TypeScript directly.
+
+### Tests
+
+```bash
+npm test              # run all tests once
+npm run test:watch    # watch mode
+npm run check         # lint + typecheck + test
+```
+
+---
+
 [Apache 2.0 © 2026 Cline Bot Inc.](./LICENSE)
