@@ -94,6 +94,12 @@ Parameters:
 - \`--project-path <path>\` optional workspace path. If omitted, uses the current working directory workspace.
 - \`--column <value>\` optional filter. Allowed values: \`backlog\`, \`in_progress\`, \`review\`.
 
+Session state reference (from \`session.reviewReason\` on review-column tasks):
+- \`"hook"\` — the agent finished a response turn and is paused, waiting for input. The process is still running. **Do not restart the task.** Wait for it or send a follow-up if needed.
+- \`"exit"\` — the agent process exited cleanly. The task is complete and ready to review.
+- \`"error"\` — the agent process exited with an error. Inspect the output before deciding next steps.
+- \`"attention"\` — the agent is waiting for explicit approval (e.g. a permission request).
+
 ## task create
 
 Purpose: create a new task in \`backlog\`, with optional plan mode and auto-review behavior.
@@ -168,6 +174,7 @@ Parameters:
 - To create multiple linked tasks, create tasks first, then call \`task link\` for each dependency edge.
 - If \`pwd\` includes \`/.kanban/worktrees/\`, set \`--project-path\` to the main workspace path. You can derive it with:
 \`main_path="\${PWD%%/.kanban/worktrees/*}"\`
+- **Do not restart a task just because it appears in the \`review\` column.** Check \`session.reviewReason\` first. Only \`"exit"\` or \`"error"\` mean the agent process has stopped. A value of \`"hook"\` means the agent is still running and paused between turns — restarting it will interrupt active work and cause a restart loop.
 `;
 }
 
