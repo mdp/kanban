@@ -2,7 +2,6 @@ import type { RuntimeTaskSessionSummary, RuntimeWorkspaceStateResponse } from ".
 import { updateTaskDependencies } from "../core/task-board-mutations.js";
 import { listWorkspaceIndexEntries, loadWorkspaceState, saveWorkspaceState } from "../state/workspace-state.js";
 import type { TerminalSessionManager } from "../terminal/session-manager.js";
-import { deleteTaskWorktree } from "../workspace/task-worktree.js";
 import type { WorkspaceRegistry } from "./workspace-registry.js";
 import { collectProjectWorktreeTaskIdsForRemoval } from "./workspace-registry.js";
 
@@ -83,6 +82,7 @@ async function persistInterruptedSessions(
 				reviewReason: "interrupted",
 				pid: null,
 				updatedAt: Date.now(),
+				worktreePreserved: true,
 			};
 		}
 	}
@@ -93,31 +93,6 @@ async function persistInterruptedSessions(
 	return worktreeTaskIdsToCleanup;
 }
 
-async function cleanupInterruptedTaskWorktrees(
-	repoPath: string,
-	taskIds: string[],
-	warn: (message: string) => void,
-): Promise<void> {
-	if (taskIds.length === 0) {
-		return;
-	}
-	const deletions = await Promise.all(
-		taskIds.map(async (taskId) => ({
-			taskId,
-			deleted: await deleteTaskWorktree({
-				repoPath,
-				taskId,
-			}),
-		})),
-	);
-	for (const { taskId, deleted } of deletions) {
-		if (deleted.ok) {
-			continue;
-		}
-		const message = deleted.error ?? `Could not delete task workspace for task "${taskId}" during shutdown.`;
-		warn(message);
-	}
-}
 
 function shouldInterruptSessionOnShutdown(summary: RuntimeTaskSessionSummary): boolean {
 	if (summary.state === "running") {
@@ -206,11 +181,10 @@ export async function shutdownRuntimeServer(deps: RuntimeShutdownCoordinatorDepe
 
 	await Promise.all(
 		interruptedByWorkspace.map(async (workspace) => {
-			const worktreeTaskIds = await persistInterruptedSessions(workspace.workspacePath, workspace.interruptedTaskIds, {
+			await persistInterruptedSessions(workspace.workspacePath, workspace.interruptedTaskIds, {
 				workspaceState: workspace.workspaceState,
 				resolveSummary: workspace.resolveSummary,
 			});
-			await cleanupInterruptedTaskWorktrees(workspace.workspacePath, worktreeTaskIds, deps.warn);
 		}),
 	);
 

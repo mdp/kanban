@@ -200,6 +200,7 @@ export const runtimeTaskSessionSummarySchema = z.object({
 	latestHookActivity: runtimeTaskHookActivitySchema.nullable().default(null),
 	latestTurnCheckpoint: runtimeTaskTurnCheckpointSchema.nullable().optional(),
 	previousTurnCheckpoint: runtimeTaskTurnCheckpointSchema.nullable().optional(),
+	worktreePreserved: z.boolean().nullable().default(null),
 });
 export type RuntimeTaskSessionSummary = z.infer<typeof runtimeTaskSessionSummarySchema>;
 

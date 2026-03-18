@@ -498,6 +498,20 @@ export function BoardCard({
 									</span>
 								</div>
 							) : null}
+							{isTrashCard && sessionSummary?.state === "interrupted" && sessionSummary.worktreePreserved === true ? (
+								<div className="flex items-center gap-1 mt-[6px]">
+									<span
+										className="inline-block shrink-0 rounded-full"
+										style={{ width: 6, height: 6, backgroundColor: "var(--color-status-orange)" }}
+									/>
+									<span
+										className="font-mono"
+										style={{ fontSize: 12, color: "var(--color-status-orange)" }}
+									>
+										interrupted · has local changes
+									</span>
+								</div>
+							) : null}
 							{showWorkspaceStatus && reviewWorkspacePath ? (
 								<p
 									className="font-mono"

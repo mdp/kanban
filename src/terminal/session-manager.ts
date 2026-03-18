@@ -101,6 +101,7 @@ function createDefaultSummary(taskId: string): RuntimeTaskSessionSummary {
 		latestHookActivity: null,
 		latestTurnCheckpoint: null,
 		previousTurnCheckpoint: null,
+		worktreePreserved: null,
 	};
 }
 

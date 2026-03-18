@@ -1236,7 +1236,7 @@ describe.sequential("runtime state stream integration", () => {
 				},
 			});
 			expect(workspaceInfo.status).toBe(200);
-			expect(workspaceInfo.payload.exists).toBe(false);
+			expect(workspaceInfo.payload.exists).toBe(true);
 		} finally {
 			await secondServer.stop();
 			cleanupProject();
